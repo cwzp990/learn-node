@@ -5,4 +5,6 @@ const loginUser = (username, password) => {
   return false
 }
 
-module.exports = loginUser
+module.exports = {
+  loginUser
+}
