@@ -3,7 +3,7 @@ const handleBlogRouter = require('./src/router/blog')
 const handleUserRouter = require('./src/router/user')
 
 // 异步处理
-const getPostData = (req, res) => {
+const getPostData = req => {
   return new Promise((resolve, reject) => {
     if (req.method !== 'POST') {
       resolve({})

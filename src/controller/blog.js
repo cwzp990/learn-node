@@ -37,8 +37,20 @@ const newBlog = (blog = {}) => {
   }
 }
 
+const updateBlog = (id, blog = {}) => {
+  console.log('博客数据是:', id, blog)
+  return true
+}
+
+const delBlog = id => {
+  console.log('id is', id)
+  return true
+}
+
 module.exports = {
   getList,
   getDetail,
-  newBlog
+  newBlog,
+  updateBlog,
+  delBlog
 }
