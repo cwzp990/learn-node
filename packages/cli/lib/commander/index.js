@@ -50,4 +50,4 @@ class Commander {
   postAction() {}
 }
 
-module.exports = Commander;
+export default Commander;

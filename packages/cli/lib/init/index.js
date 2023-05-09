@@ -1,5 +1,5 @@
-const Commander = require('../commander');
-const { log } = require('../../utils/log');
+import Commander from '../commander/index.js';
+import { log } from '../../utils/log.js';
 class InitCommander extends Commander {
   get command() {
     return 'init [name]';
@@ -22,4 +22,4 @@ function Init(instance) {
   return new InitCommander(instance);
 }
 
-module.exports = Init;
+export default Init;

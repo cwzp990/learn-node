@@ -6,6 +6,7 @@
   "bin": {
     "fle": "bin/index.js"
   },
+  "type": "module",
   "files": [
     "lib",
     "bin"

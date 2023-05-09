@@ -1,8 +1,14 @@
-const { program } = require('commander');
-const { log } = require('../utils/log');
-const createInitCommander = require('./init');
+import { program } from 'commander';
+import { dirname } from 'dirname-filename-esm';
+import path from 'path';
+import fsextra from 'fs-extra';
 
-const pkg = require('../package.json');
+import createInitCommander from './init/index.js';
+import { log } from '../utils/log.js';
+
+const __dirname = dirname(import.meta);
+const pkgPath = path.resolve(__dirname, '../package.json');
+const pkg = fsextra.readJsonSync(pkgPath);
 
 function main(args) {
   log.success('version', pkg.version);
@@ -18,4 +24,4 @@ function main(args) {
   program.parse(process.argv);
 }
 
-module.exports = main;
+export default main;
