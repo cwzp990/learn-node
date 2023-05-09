@@ -1,5 +1,5 @@
 const Commander = require('../commander');
-
+const { log } = require('../../utils/log');
 class InitCommander extends Commander {
   get command() {
     return 'init [name]';
@@ -14,7 +14,7 @@ class InitCommander extends Commander {
   }
 
   action([name, options]) {
-    console.log('init', name, options);
+    log.info('init', name, options);
   }
 }
 

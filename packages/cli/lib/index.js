@@ -1,9 +1,12 @@
 const { program } = require('commander');
-const pkg = require('../package.json');
-
+const { log } = require('../utils/log');
 const createInitCommander = require('./init');
 
+const pkg = require('../package.json');
+
 function main(args) {
+  log.success('version', pkg.version);
+
   program
     .name(Object.keys(pkg.bin)[0])
     .usage('<command> [options]')
