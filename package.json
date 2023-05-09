@@ -1,16 +1,16 @@
 {
-  "name": "learn_node",
+  "name": "@fle/app",
   "version": "1.0.0",
-  "description": "learn node",
-  "main": "bin/www.js",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "cross-env NODE_ENV=dev nodemon ./bin/www.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "cross-env": "^5.2.0",
-    "nodemon": "^1.18.10"
-  }
+  "workspaces": [
+    "packages/*"
+  ]
 }

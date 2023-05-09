@@ -1,0 +1,23 @@
+{
+  "name": "@fle/cli",
+  "version": "1.0.0",
+  "description": "fle cli",
+  "main": "lib/index.js",
+  "bin": {
+    "fle": "bin/index.js"
+  },
+  "files": [
+    "lib",
+    "bin"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "import-local": "^3.1.0",
+    "npmlog": "^7.0.1"
+  }
+}

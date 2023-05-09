@@ -1,0 +1,15 @@
+{
+  "0 debug pnpm:scope": {
+    "selected": 1,
+    "workspacePrefix": "/Users/chenwenzhen/Project/learn-node"
+  },
+  "1 error pnpm": {
+    "code": "ERR_PNPM_PACKAGE_JSON_EXISTS",
+    "err": {
+      "name": "pnpm",
+      "message": "package.json already exists",
+      "code": "ERR_PNPM_PACKAGE_JSON_EXISTS",
+      "stack": "pnpm: package.json already exists\n    at Object.handler [as init] (/Users/chenwenzhen/.nvm/versions/node/v16.15.0/lib/node_modules/pnpm/dist/pnpm.cjs:173989:15)\n    at /Users/chenwenzhen/.nvm/versions/node/v16.15.0/lib/node_modules/pnpm/dist/pnpm.cjs:176497:51\n    at async run (/Users/chenwenzhen/.nvm/versions/node/v16.15.0/lib/node_modules/pnpm/dist/pnpm.cjs:176473:34)\n    at async runPnpm (/Users/chenwenzhen/.nvm/versions/node/v16.15.0/lib/node_modules/pnpm/dist/pnpm.cjs:176691:5)\n    at async /Users/chenwenzhen/.nvm/versions/node/v16.15.0/lib/node_modules/pnpm/dist/pnpm.cjs:176683:7"
+    }
+  }
+}
