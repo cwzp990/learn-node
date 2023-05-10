@@ -1,13 +1,13 @@
-import path from 'path';
-import { pathExistsSync } from 'path-exists';
-import fsextra from 'fs-extra';
-import ora from 'ora';
-import { execa } from 'execa';
+import path from "path";
+import { pathExistsSync } from "path-exists";
+import fsextra from "fs-extra";
+import ora from "ora";
+import { execa } from "execa";
 
-import log from '../../utils/log.js';
+import log from "../../utils/log.js";
 
 function getCacheDir(targetPath) {
-  return path.resolve(targetPath, 'node_modules');
+  return path.resolve(targetPath, "node_modules");
 }
 
 function makeCacheDir(targetPath) {
@@ -20,8 +20,8 @@ function makeCacheDir(targetPath) {
 
 async function downloadAddTemplate(targetPath, selectedTemplate) {
   const { npmName, version } = selectedTemplate;
-  const installCommand = 'npm';
-  const installArgs = ['install', `${npmName}@${version}`];
+  const installCommand = "npm";
+  const installArgs = ["install", `${npmName}@${version}`];
   const cacheDir = getCacheDir(targetPath);
 
   // 下载模板
@@ -34,14 +34,14 @@ export default async function downloadTemplate(selectedTemplate) {
   makeCacheDir(targetPath);
 
   // 下载模板
-  const spinner = ora('正在下载模板...').start();
+  const spinner = ora("正在下载模板...").start();
 
   try {
     await downloadAddTemplate(targetPath, template);
-    log.success('模板下载成功');
-  } catch (err) {
-    log.error('模板下载失败');
-  } finally {
     spinner.stop();
+    log.success("模板下载成功");
+  } catch (err) {
+    spinner.stop();
+    log.error("模板下载失败");
   }
 }
