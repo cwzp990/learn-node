@@ -3,21 +3,7 @@ import { homedir } from "os";
 
 import { getLatestVersion } from "../../utils/npm.js";
 import { makeInput, makeList } from "../inquirer/index.js";
-
-const ADD_TEMPLATE = [
-  {
-    name: "vue",
-    value: "template-vue3",
-    npmName: "@imooc.com/template-vue3",
-    version: "latest",
-  },
-  {
-    name: "react",
-    value: "template-react18",
-    npmName: "@imooc.com/template-react18",
-    version: "latest",
-  },
-];
+import request from "../request/index.js";
 
 const ADD_TYPE = [
   {
@@ -53,9 +39,9 @@ const getAddName = () => {
   });
 };
 
-const getAddTemplate = () => {
+const getAddTemplate = (templateList) => {
   return makeList({
-    choices: ADD_TEMPLATE,
+    choices: templateList,
     message: "请选择需要创建的项目模板",
     defaultValue: "vue",
   });
@@ -65,13 +51,27 @@ function makeTargetPath() {
   return path.resolve(`${homedir()}/${TEMP_HOME}`, "addTemplate");
 }
 
+// 通过api获取模板列表
+async function getTemplateList() {
+  const data = await request({
+    url: "/v1/project",
+    method: "get",
+  }).catch((err) => {
+    throw new Error(err);
+  });
+
+  return data;
+}
+
 export default async function createTemplate(name, options) {
+  // 获取模板列表
+  const templateList = await getTemplateList();
   const { type = null, template = null } = options;
   // 获取创建类型
   const addType = type || (await getAddType());
   const addName = name || (await getAddName());
-  const addTemplate = template || (await getAddTemplate());
-  const selectedTemplate = ADD_TEMPLATE.find((_) => _.value === addTemplate);
+  const addTemplate = template || (await getAddTemplate(templateList));
+  const selectedTemplate = templateList.find((_) => _.value === addTemplate);
 
   if (!selectedTemplate) {
     throw new Error(`项目模板 ${template} 不存在!`);
