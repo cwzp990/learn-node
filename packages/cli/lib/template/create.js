@@ -53,7 +53,7 @@ function makeTargetPath() {
 
 // 通过api获取模板列表
 async function getTemplateList() {
-  const data = await request({
+  const { data } = await request({
     url: "/v1/project",
     method: "get",
   }).catch((err) => {

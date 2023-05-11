@@ -22,7 +22,9 @@
   "license": "ISC",
   "dependencies": {
     "commander": "^10.0.1",
+    "ejs": "^3.1.9",
     "execa": "^7.1.1",
+    "glob": "^10.2.3",
     "import-local": "^3.1.0",
     "inquirer": "^9.2.2",
     "npmlog": "^7.0.1",

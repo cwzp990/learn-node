@@ -1,7 +1,11 @@
 import fsextra from "fs-extra";
 import path from "path";
 import ora from "ora";
+import ejs from "ejs";
+
+import { glob } from "glob";
 import { pathExistsSync } from "path-exists";
+
 import log from "../../utils/log.js";
 
 function getCacheFilePath(targetPath, template) {
@@ -19,6 +23,26 @@ function copyFile(targetPath, template, installDir) {
   });
   spinner.stop();
   log.success("拷贝文件成功");
+}
+
+function ejsRender(installDir, template) {
+  const { ignore, value: name } = template;
+  glob("**", {
+    cwd: installDir,
+    nodir: true,
+    ignore: [ignore, "**/node_modules/**"],
+  }).then((files) => {
+    files.forEach((file) => {
+      const filePath = path.join(installDir, file);
+      ejs.renderFile(filePath, { data: { name } }, (err, result) => {
+        if (!err) {
+          fsextra.writeFileSync(filePath, result);
+        } else {
+          throw new Error(err);
+        }
+      });
+    });
+  });
 }
 
 export default function installTemplate(selectedTemplate, options) {
@@ -41,4 +65,6 @@ export default function installTemplate(selectedTemplate, options) {
   }
 
   copyFile(targetPath, template, installDir);
+
+  ejsRender(installDir, template);
 }
