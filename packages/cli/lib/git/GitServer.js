@@ -1,6 +1,6 @@
 import path from "path";
 import fsextra from "fs-extra";
-import { homedir, platform } from "os";
+import { homedir } from "os";
 import { pathExistsSync } from "path-exists";
 
 import { makePassword } from "../inquirer/index.js";
@@ -26,7 +26,9 @@ function getGitPlatform() {
 }
 
 class GitServer {
-  constructor() {
+  constructor() {}
+
+  init() {
     // 检查token
     const tokenPath = createTokenPath();
 

@@ -1,3 +1,4 @@
+import axios from "axios";
 import { GitServer } from "./GitServer.js";
 
 const BASE_URL = "https://gitee.com/api/v5";
@@ -20,7 +21,7 @@ class GitHub extends GitServer {
   }
 
   get(url, params, headers) {
-    return this.service.get({
+    return this.service({
       url,
       params: {
         ...params,
@@ -32,12 +33,16 @@ class GitHub extends GitServer {
   }
 
   post(url, params, headers) {
-    return this.service.post({
+    return this.service({
       url,
       data: params,
       methods: "post",
       headers,
     });
+  }
+
+  searchRepositories(params) {
+    return this.get("/search/repositories", params);
   }
 }
 

@@ -1,3 +1,5 @@
+import axios from "axios";
+import { execa } from "execa";
 import { GitServer } from "./GitServer.js";
 
 const BASE_URL = "https://api.github.com";
@@ -30,7 +32,7 @@ class GitHub extends GitServer {
   }
 
   get(url, params, headers) {
-    return this.service.get({
+    return this.service({
       url,
       params,
       methods: "get",
@@ -39,12 +41,37 @@ class GitHub extends GitServer {
   }
 
   post(url, params, headers) {
-    return this.service.post({
+    return this.service({
       url,
       data: params,
       methods: "post",
       headers,
     });
+  }
+
+  searchRepositories(params) {
+    return this.get("/search/repositories", params);
+  }
+
+  getTags(fullname, params) {
+    return this.get(`/repos/${fullname}/tags`, params);
+  }
+
+  getRepoUrl(platform = "github", repo) {
+    return `https://${platform}.com/${repo}.git`;
+  }
+
+  cloneRepo(repo, tag, platform) {
+    if (tag) {
+      return execa("git", [
+        "clone",
+        this.getRepoUrl(platform, repo),
+        "-b",
+        tag,
+      ]);
+    } else {
+      return execa("git ", ["clone", this.getRepoUrl(platform, repo)]);
+    }
   }
 }
 
