@@ -2,8 +2,10 @@ import path from "path";
 import fsextra from "fs-extra";
 import { homedir } from "os";
 import { pathExistsSync } from "path-exists";
+import { execa } from "execa";
 
 import { makePassword } from "../inquirer/index.js";
+import log from "../../utils/log.js";
 
 const TEMP_HOME = ".fle-cli";
 const TEMP_TOKEN = ".token";
@@ -54,6 +56,70 @@ class GitServer {
 
   savePlatform(platform) {
     fsextra.writeFileSync(createPlatformPath(), platform);
+  }
+
+  getRepoUrl(platform = "github", repo) {
+    return `https://${platform}.com/${repo}.git`;
+  }
+
+  cloneRepo(repo, tag, platform) {
+    if (tag) {
+      return execa("git", [
+        "clone",
+        this.getRepoUrl(platform, repo),
+        "-b",
+        tag,
+      ]);
+    } else {
+      return execa("git", ["clone", this.getRepoUrl(platform, repo)]);
+    }
+  }
+
+  installDependencies(cwd, fullname) {
+    const projectPath = this.getProjectPath(cwd, fullname);
+
+    if (pathExistsSync(projectPath)) {
+      return execa(
+        "npm",
+        ["install", "--registry=https://registry.npmmirror.com"],
+        {
+          cwd: projectPath,
+        }
+      );
+    }
+  }
+
+  runRepo(cwd, fullname) {
+    const projectPath = this.getProjectPath(cwd, fullname);
+
+    const content = this.getPkgContent(projectPath);
+    if (content) {
+      const { scripts } = content;
+      if (scripts && scripts.dev) {
+        return execa("npm", ["run", "dev"], {
+          cwd: projectPath,
+          stdout: "inherit",
+        });
+      } else {
+        log.warn("未找到scripts.dev命令");
+      }
+    }
+  }
+
+  getPkgContent(projectPath) {
+    const pkgPath = path.resolve(projectPath, "package.json");
+
+    if (pathExistsSync(pkgPath)) {
+      return fsextra.readJSONSync(pkgPath);
+    }
+    return null;
+  }
+
+  getProjectPath(cwd, fullname) {
+    const projectName = fullname.split("/")[1];
+    const projectPath = path.resolve(cwd, projectName);
+
+    return projectPath;
   }
 }
 

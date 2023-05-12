@@ -1,5 +1,4 @@
 import axios from "axios";
-import { execa } from "execa";
 import { GitServer } from "./GitServer.js";
 
 const BASE_URL = "https://api.github.com";
@@ -55,23 +54,6 @@ class GitHub extends GitServer {
 
   getTags(fullname, params) {
     return this.get(`/repos/${fullname}/tags`, params);
-  }
-
-  getRepoUrl(platform = "github", repo) {
-    return `https://${platform}.com/${repo}.git`;
-  }
-
-  cloneRepo(repo, tag, platform) {
-    if (tag) {
-      return execa("git", [
-        "clone",
-        this.getRepoUrl(platform, repo),
-        "-b",
-        tag,
-      ]);
-    } else {
-      return execa("git ", ["clone", this.getRepoUrl(platform, repo)]);
-    }
   }
 }
 

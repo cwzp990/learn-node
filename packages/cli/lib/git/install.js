@@ -37,6 +37,8 @@ class InstallCommander extends Commander {
     await this.searchGitApi();
     await this.selectTags();
     await this.downloadRepo();
+    await this.installDependencies();
+    await this.runRepo();
   }
 
   selectPlatform() {
@@ -85,7 +87,7 @@ class InstallCommander extends Commander {
 
   async downloadRepo() {
     const spinner = ora(
-      `正在下载 ${this.selectedRepo} / ${this.selectedTag}...`
+      `正在下载 ${this.selectedRepo} <${this.selectedTag}>...`
     ).start();
     await this.gitApi.cloneRepo(
       this.selectedRepo,
@@ -93,7 +95,24 @@ class InstallCommander extends Commander {
       this.platform
     );
     spinner.stop();
-    log.success(`${this.selectedRepo} 下载成功`);
+    log.success(`${this.selectedRepo}  <${this.selectedTag}> 下载成功`);
+  }
+
+  async installDependencies() {
+    const spinner = ora(
+      `正在安装依赖 ${this.selectedRepo}  <${this.selectedTag}>...`
+    ).start();
+    try {
+      await this.gitApi.installDependencies(process.cwd(), this.selectedRepo);
+      spinner.stop();
+      log.success(`${this.selectedRepo}  <${this.selectedTag}> 安装成功`);
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
+  async runRepo() {
+    return this.gitApi.runRepo(process.cwd(), this.selectedRepo);
   }
 
   async doSearch() {
@@ -149,6 +168,11 @@ class InstallCommander extends Commander {
       per_page: this.tagPageSize,
     };
     const data = await this.gitApi.getTags(this.selectedRepo, params);
+
+    if (!data.length) {
+      return;
+    }
+
     const list = data.map((item) => ({
       name: item.name,
       value: item.name,
