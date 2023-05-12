@@ -1,18 +1,18 @@
-import inquirer from 'inquirer';
+import inquirer from "inquirer";
 
 function make({
   choices,
   defaultValue,
   message,
-  type = 'list',
+  type = "list",
   require = true,
-  mask = '*',
+  mask = "*",
   validate,
   pageSize,
   loop,
 }) {
   const options = {
-    name: 'name',
+    name: "name",
     choices,
     default: defaultValue,
     message,
@@ -24,7 +24,7 @@ function make({
     loop,
   };
 
-  if (type === 'list') {
+  if (type === "list") {
     options.choices = choices;
   }
 
@@ -36,5 +36,9 @@ export const makeList = (params) => {
 };
 
 export const makeInput = (params) => {
-  return make({ ...params, type: 'input' });
+  return make({ ...params, type: "input" });
+};
+
+export const makePassword = (params) => {
+  return make({ ...params, type: "password" });
 };
