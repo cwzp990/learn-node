@@ -1,25 +1,9 @@
 import ora from "ora";
 import Commander from "../commander/index.js";
-import GitHub from "./github.js";
 import log from "../../utils/log.js";
 
 import { makeInput, makeList } from "../inquirer/index.js";
-import { getGitPlatform } from "./GitServer.js";
-
-const PLATFORM = [
-  {
-    name: "GitHub",
-    value: "github",
-  },
-  {
-    name: "Gitee",
-    value: "gitee",
-  },
-  {
-    name: "GitLab",
-    value: "gitlab",
-  },
-];
+import { initGitServer } from "../../utils/git.js";
 
 class InstallCommander extends Commander {
   get command() {
@@ -41,25 +25,9 @@ class InstallCommander extends Commander {
     await this.runRepo();
   }
 
-  selectPlatform() {
-    return makeList({
-      choices: PLATFORM,
-      message: "请选择代码托管平台",
-      defaultValue: "github",
-    });
-  }
-
   async generateGitApi() {
-    // 先从本地文件获取 没有取到再让用户选择
-    this.platform = getGitPlatform() || (await this.selectPlatform());
+    this.gitApi = await initGitServer();
 
-    if (this.platform === "github") {
-      this.gitApi = new GitHub();
-    } else if (this.platform === "gitee") {
-      this.gitApi = new Gitee();
-    }
-
-    this.gitApi.savePlatform(this.platform);
     await this.gitApi.init();
   }
 

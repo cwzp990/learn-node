@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GitServer } from "./GitServer.js";
+import { getGitLogin, getGitOwn, GitServer } from "./GitServer.js";
 
 const BASE_URL = "https://api.github.com";
 
@@ -54,6 +54,31 @@ class GitHub extends GitServer {
 
   getTags(fullname, params) {
     return this.get(`/repos/${fullname}/tags`, params);
+  }
+
+  getUser() {
+    return this.get("/user");
+  }
+
+  getOrg() {
+    return this.get("/user/orgs");
+  }
+
+  createRepo(name) {
+    const gitOwn = getGitOwn();
+
+    if (gitOwn === "user") {
+      return this.post("/user/repos", {
+        name,
+      });
+    }
+
+    if (gitOwn === "org") {
+      const gitLogin = getGitLogin();
+      return this.post(`/orgs/${gitLogin}/repos`, {
+        name,
+      });
+    }
   }
 }
 

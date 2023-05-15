@@ -4,12 +4,14 @@ import { homedir } from "os";
 import { pathExistsSync } from "path-exists";
 import { execa } from "execa";
 
-import { makePassword } from "../inquirer/index.js";
 import log from "../../utils/log.js";
+import { makePassword } from "../inquirer/index.js";
 
 const TEMP_HOME = ".fle-cli";
 const TEMP_TOKEN = ".token";
 const TEMP_PLATFORM = ".git_platform";
+const TEMP_OWN = ".git_own";
+const TEMP_Login = ".git_login";
 
 function createTokenPath() {
   return path.resolve(homedir(), TEMP_HOME, TEMP_TOKEN);
@@ -17,6 +19,14 @@ function createTokenPath() {
 
 function createPlatformPath() {
   return path.resolve(homedir(), TEMP_HOME, TEMP_PLATFORM);
+}
+
+function createOwnPath() {
+  return path.resolve(homedir(), TEMP_HOME, TEMP_OWN);
+}
+
+function createLoginPath() {
+  return path.resolve(homedir(), TEMP_HOME, TEMP_Login);
 }
 
 function getGitPlatform() {
@@ -27,21 +37,47 @@ function getGitPlatform() {
   return null;
 }
 
+function getGitOwn() {
+  if (pathExistsSync(createOwnPath())) {
+    return fsextra.readFileSync(createOwnPath(), "utf-8").toString();
+  }
+
+  return null;
+}
+
+function getGitLogin() {
+  if (pathExistsSync(createLoginPath())) {
+    return fsextra.readFileSync(createLoginPath(), "utf-8").toString();
+  }
+
+  return null;
+}
+
+function clearCache() {
+  const platform = createPlatformPath();
+  const token = createTokenPath();
+  const own = createOwnPath();
+  const login = createLoginPath();
+  fsextra.removeSync(platform);
+  fsextra.removeSync(token);
+  fsextra.removeSync(own);
+  fsextra.removeSync(login);
+}
+
 class GitServer {
   constructor() {}
 
-  init() {
+  async init() {
     // 检查token
     const tokenPath = createTokenPath();
 
-    if (pathExistsSync(tokenPath)) {
+    if (pathExistsSync(tokenPath) && fsextra.statSync(tokenPath).size) {
       this.token = fsextra.readFileSync(tokenPath, "utf-8").toString();
     } else {
       // 录入token
-      this.getToken().then((token) => {
-        fsextra.writeFileSync(tokenPath, token);
-        this.token = token;
-      });
+      const token = await this.getToken();
+      fsextra.writeFileSync(tokenPath, token);
+      this.token = token;
     }
   }
 
@@ -52,10 +88,6 @@ class GitServer {
         return v.length ? true : "token不能为空";
       },
     });
-  }
-
-  savePlatform(platform) {
-    fsextra.writeFileSync(createPlatformPath(), platform);
   }
 
   getRepoUrl(platform = "github", repo) {
@@ -123,4 +155,14 @@ class GitServer {
   }
 }
 
-export { GitServer, getGitPlatform };
+export {
+  GitServer,
+  clearCache,
+  createTokenPath,
+  createPlatformPath,
+  createLoginPath,
+  createOwnPath,
+  getGitPlatform,
+  getGitLogin,
+  getGitOwn,
+};
