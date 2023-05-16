@@ -1,4 +1,5 @@
 import axios from "axios";
+import log from "../../utils/log.js";
 import { getGitLogin, getGitOwn, GitServer } from "./GitServer.js";
 
 const BASE_URL = "https://api.github.com";
@@ -64,8 +65,20 @@ class GitHub extends GitServer {
     return this.get("/user/orgs");
   }
 
-  createRepo(name) {
+  getRepo(owner, repo) {
+    return this.get(`/repos/${owner}/${repo}`);
+  }
+
+  async createRemoteRepo(name) {
     const gitOwn = getGitOwn();
+    const gitLogin = getGitLogin();
+
+    const repo = await this.getRepo(gitLogin, name);
+
+    if (repo) {
+      log.info("仓库已存在");
+      return repo;
+    }
 
     if (gitOwn === "user") {
       return this.post("/user/repos", {
@@ -74,7 +87,6 @@ class GitHub extends GitServer {
     }
 
     if (gitOwn === "org") {
-      const gitLogin = getGitLogin();
       return this.post(`/orgs/${gitLogin}/repos`, {
         name,
       });
