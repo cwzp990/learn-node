@@ -62,7 +62,7 @@ class CommitCommander extends Commander {
     }
 
     const remotes = await this.git.getRemotes();
-    if (remotes.find((remote) => remote.name === "origin")) {
+    if (!remotes.find((remote) => remote.name === "origin")) {
       this.git.addRemote("origin", remoteUrl);
       log.success("本地仓库关联远程仓库成功");
     }
@@ -72,6 +72,8 @@ class CommitCommander extends Commander {
     await this.git.pull("origin", "master").catch((err) => {
       log.error("拉取远程仓库失败");
     });
+
+    log.verbose("status:", status);
   }
 }
 
